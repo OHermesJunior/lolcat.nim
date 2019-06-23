@@ -45,27 +45,19 @@ proc rainbow(freq, i: float): Color =
   result = rgb(r.int, g.int, b.int)
 
 proc printLn(line: string) =
-  var utf = ""
-  for n, l in line:
-    read.inc
+  var n = 0
+  for l in runes(line):
+    n.inc
+    read += l.size
     color = rainbow(freq, seed.float + n / offset)
     if speed != 0:
       sleep(speed)
     stdout.write(ansiForegroundColorCode(color))
-    # the way I came up with to write UTF8 chars
-    # please tell me a better way!
-    if validateUTF8($l) == 0:
-      if utf == "": utf = $l
-      else:
-        stdout.write(utf & $l)
-        utf = ""
-    else: stdout.write(l)
+    stdout.write(l)
     stdout.flushFile
-    if speed == 0:
-      sleep(speed)
     if Newlines in $l:
       break
-  
+
 proc cat(text: var string) =
   text.removeSuffix
   while read < text.len:
